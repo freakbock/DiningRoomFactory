@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "654211105302",
+    "project_id": "diningroomfactory",
+    "storage_bucket": "diningroomfactory.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:654211105302:android:f895b0282754cab435ab37",
+        "android_client_info": {
+          "package_name": "com.example.diningroomfactory"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBneh-uhYMhhffo1LO-vyIvi_J-JXo_Z-c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

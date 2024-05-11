@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Задний фон (пустой) -->
+    <item android:drawable="@android:color/transparent" />
+
+    <item android:gravity="bottom" android:height="2dp" >
+    <shape android:shape="rectangle" >
+        <solid android:color="@color/lightGray" />
+        <size android:height="2dp" />
+
+    </shape>
+
+    </item>
+
+    </layer-list>

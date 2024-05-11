@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="orange">#FFA500</color>
+    <color name="darkOrange">#D18000</color>
+    <color name="purpure">#8A2BE2</color>
+    <color name="emerald">#00FF00</color>
+    <color name="corall">#FF6F61</color>
+    <color name="lightBlue">#4169E1</color>
+    <color name="lightGray">#E0D8DE</color>
+    <color name="lightGray_2">#d9d4d8</color>
+
+    <color name="gray">#808080</color>
+    <color name="agate_gray">#B5B8B1</color>
+    <color name="darkGray">#293133</color>
+
+    <color name="turquoise">#D3E0DC </color>
+    <color name="beige">#FFF3E1</color>
+</resources>

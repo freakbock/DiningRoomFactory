@@ -78,18 +78,18 @@ class ReserveProductActivity : AppCompatActivity(){
                 count.setHint("масса в кг")
                 count.addTextChangedListener{
                     if(count.text.toString().isNotEmpty()){
-                        if(count.text.toString() == "0"){
+                        if(count.text.toString() == "0" || count.text.toString() == "0.0"){
                             if(factoryProducts.find{ it.productId == product.id} != null){
                                 factoryProducts.remove(factoryProducts.find{ it.productId == product.id})
                             }
                         }
-                        if(count.text.toString().toIntOrNull()!= null){
+                        if(count.text.toString().toDoubleOrNull()!= null){
                             if(factoryProducts.find{ it.productId == product.id} == null){
-                                factoryProducts.add(FactoryProduct("id", factoryId, product.id, count.text.toString().toInt()))
+                                factoryProducts.add(FactoryProduct("id", factoryId, product.id, count.text.toString().toDouble()))
                             }
                             else{
                                 factoryProducts.remove(factoryProducts.find{ it.productId == product.id})
-                                factoryProducts.add(FactoryProduct("id", factoryId, product.id, count.text.toString().toInt()))
+                                factoryProducts.add(FactoryProduct("id", factoryId, product.id, count.text.toString().toDouble()))
                             }
                         }
                     }

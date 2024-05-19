@@ -97,7 +97,7 @@ class MenuActivity: AppCompatActivity() {
                 if(isEdit){
                     if(menu.products.find { it.productId == product.id } != null){
                         count.setText(menu.products.find{it.productId == product.id}!!.number.toString())
-                        productsForMenu.add(ProductPair(product.id, count.text.toString().toInt()))
+                        productsForMenu.add(ProductPair(product.id, count.text.toString().toDouble()))
                     }
                 }
                 count.layoutParams = countParams
@@ -114,13 +114,13 @@ class MenuActivity: AppCompatActivity() {
                                 productsForMenu.remove(productsForMenu.find{ it.productId == product.id})
                             }
                         }
-                        if(count.text.toString().toIntOrNull()!= null){
+                        if(count.text.toString().toDoubleOrNull()!= null){
                             if(productsForMenu.find{ it.productId == product.id} == null){
-                                productsForMenu.add(ProductPair(product.id, count.text.toString().toInt()))
+                                productsForMenu.add(ProductPair(product.id, count.text.toString().toDouble()))
                             }
                             else{
                                 productsForMenu.remove(productsForMenu.find{ it.productId == product.id})
-                                productsForMenu.add(ProductPair(product.id, count.text.toString().toInt()))
+                                productsForMenu.add(ProductPair(product.id, count.text.toString().toDouble()))
                             }
                         }
                     }

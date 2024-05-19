@@ -9,9 +9,9 @@
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="com.example.diningroomfactory" />
-                  <option name="mobileSdkAppId" value="1:654211105302:android:f895b0282754cab435ab37" />
-                  <option name="projectId" value="diningroomfactory" />
-                  <option name="projectNumber" value="654211105302" />
+                  <option name="mobileSdkAppId" value="1:636675634683:android:9ab3daefab51113ad4c75e" />
+                  <option name="projectId" value="diningroomfactory-cc790" />
+                  <option name="projectNumber" value="636675634683" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

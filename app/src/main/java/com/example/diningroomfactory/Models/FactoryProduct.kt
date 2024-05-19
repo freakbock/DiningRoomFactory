@@ -14,6 +14,6 @@ data class FactoryProduct(
     var productId: String = "",
 
     @PropertyName("productCount")
-    var productCount: Int = 0
+    var productCount: Double = 0.0
 
 )

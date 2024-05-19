@@ -434,7 +434,7 @@ class DatabaseHelper  {
                     val factoryId = userSnapshot.child("factoryId").getValue()?.toString() ?: ""
                     val userTabel = userSnapshot.child("tabel").getValue()?.toString() ?: ""
                     val password = userSnapshot.child("password").getValue()?.toString() ?: ""
-                    val FIO = userSnapshot.child("fio").getValue()?.toString() ?: ""
+                    val fio = userSnapshot.child("fio").getValue()?.toString() ?: ""
                     val birthday = userSnapshot.child("birthday").getValue()?.toString() ?: ""
                     val post = userSnapshot.child("post").getValue()?.toString() ?: ""
                     val role = userSnapshot.child("role").getValue()?.toString() ?: ""
@@ -444,7 +444,7 @@ class DatabaseHelper  {
                     // Проверяем условие нашедшегося пользователя
                     if (userTabel == tabel) {
                         println("НАШЁЛСЯ USER")
-                        val user = User(id, factoryId, userTabel, password, FIO, birthday, post, role)
+                        val user = User(id, factoryId, userTabel, password, fio, birthday, post, role)
                         foundUser = user
                         break
                     }

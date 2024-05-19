@@ -6,6 +6,7 @@ import com.example.diningroomfactory.Models.Factory
 import com.example.diningroomfactory.Models.FactoryMenu
 import com.example.diningroomfactory.Models.FactoryProduct
 import com.example.diningroomfactory.Models.Menu
+import com.example.diningroomfactory.Models.Order
 import com.example.diningroomfactory.Models.Product
 import com.example.diningroomfactory.Models.User
 import com.google.firebase.database.DataSnapshot
@@ -13,6 +14,9 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class DatabaseHelper  {
 
@@ -25,7 +29,9 @@ class DatabaseHelper  {
     private val productRef: DatabaseReference by lazy {
         database.getReference("products")
     }
-
+    private val ordersRef: DatabaseReference by lazy {
+        database.getReference("orders")
+    }
     private val factoryRef: DatabaseReference by lazy {
         database.getReference("factories")
     }
@@ -38,10 +44,10 @@ class DatabaseHelper  {
     private val userRef: DatabaseReference by lazy {
         database.getReference("users")
     }
-
     private val menuRef: DatabaseReference by lazy {
         database.getReference("menu")
     }
+
 
     //region Menu Data
     // Добавление данных
@@ -390,6 +396,34 @@ class DatabaseHelper  {
 
     //region User Data
 
+    fun getAllUsers(callback: (List<User>) -> Unit) {
+        val userRef: DatabaseReference = FirebaseDatabase.getInstance().getReference("users")
+        userRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val users = mutableListOf<User>()
+                for (userSnapshot in snapshot.children) {
+                    val id = userSnapshot.child("id").getValue(String::class.java) ?: ""
+                    val factoryId = userSnapshot.child("factoryId").getValue(String::class.java) ?: ""
+                    val tabel = userSnapshot.child("tabel").getValue(String::class.java) ?: ""
+                    val password = userSnapshot.child("password").getValue(String::class.java) ?: ""
+                    val fio = userSnapshot.child("fio").getValue(String::class.java) ?: ""
+                    val birthday = userSnapshot.child("birthday").getValue(String::class.java) ?: ""
+                    val post = userSnapshot.child("post").getValue(String::class.java) ?: ""
+                    val role = userSnapshot.child("role").getValue(String::class.java) ?: ""
+
+                    val user = User(id, factoryId, tabel, password, fio, birthday, post, role)
+                    users.add(user)
+                }
+                callback(users)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.d("TAG", "onCancelled: ${error.message}")
+                callback(emptyList())
+            }
+        })
+    }
+
     fun getUserByTabel(tabel: String, callback: (User?) -> Unit) {
         userRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -400,7 +434,7 @@ class DatabaseHelper  {
                     val factoryId = userSnapshot.child("factoryId").getValue()?.toString() ?: ""
                     val userTabel = userSnapshot.child("tabel").getValue()?.toString() ?: ""
                     val password = userSnapshot.child("password").getValue()?.toString() ?: ""
-                    val FIO = userSnapshot.child("FIO").getValue()?.toString() ?: ""
+                    val FIO = userSnapshot.child("fio").getValue()?.toString() ?: ""
                     val birthday = userSnapshot.child("birthday").getValue()?.toString() ?: ""
                     val post = userSnapshot.child("post").getValue()?.toString() ?: ""
                     val role = userSnapshot.child("role").getValue()?.toString() ?: ""
@@ -424,5 +458,113 @@ class DatabaseHelper  {
             }
         })
     }
+    //endregion
+
+    //region Orders Data
+
+    fun getOrdersByFactoryId(factoryId: String, callback: (List<Order>) -> Unit) {
+        val query = ordersRef.orderByChild("factoryId").equalTo(factoryId)
+        query.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val orders = mutableListOf<Order>()
+                for (orderSnapshot in snapshot.children) {
+                    val order = orderSnapshot.getValue(Order::class.java)
+                    order?.let {
+                        orders.add(it)
+                    }
+                }
+                callback(orders)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                callback(emptyList())
+            }
+        })
+    }
+
+
+    fun addOrder(order: Order, onComplete: (Boolean) -> Unit) {
+        val orderId = ordersRef.push().key
+        if (orderId != null) {
+            order.id = orderId
+            ordersRef.child(orderId).setValue(order)
+                .addOnCompleteListener { task ->
+                    onComplete(task.isSuccessful)
+                }
+        } else {
+            onComplete(false)
+        }
+    }
+
+    fun getOrdersByUserId(userId: String, callback: (List<Order>) -> Unit) {
+        val query = ordersRef.orderByChild("userId").equalTo(userId)
+        query.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val orders = mutableListOf<Order>()
+                for (orderSnapshot in snapshot.children) {
+                    val order = orderSnapshot.getValue(Order::class.java)
+                    order?.let {
+                        orders.add(it)
+                    }
+                }
+                callback(orders)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                callback(emptyList())
+            }
+        })
+    }
+
+    fun getOrder(orderId: String, callback: (Order?) -> Unit) {
+        ordersRef.child(orderId).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val order = snapshot.getValue(Order::class.java)
+                callback(order)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                callback(null)
+            }
+        })
+    }
+
+    // Обновление данных заказа
+    fun updateOrder(orderId: String, order: Order, onComplete: (Boolean) -> Unit) {
+        ordersRef.child(orderId).setValue(order)
+            .addOnCompleteListener { task ->
+                onComplete(task.isSuccessful)
+            }
+    }
+
+    // Удаление данных заказа
+    fun deleteOrder(orderId: String, onComplete: (Boolean) -> Unit) {
+        ordersRef.child(orderId).removeValue()
+            .addOnCompleteListener { task ->
+                onComplete(task.isSuccessful)
+            }
+    }
+
+    // Получение всех заказов
+    fun getAllOrders(callback: (List<Order>) -> Unit) {
+        ordersRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val orders = mutableListOf<Order>()
+                for (orderSnapshot in snapshot.children) {
+                    val order = orderSnapshot.getValue(Order::class.java)
+                    order?.let {
+                        orders.add(it)
+                    }
+                }
+                callback(orders)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                callback(emptyList())
+            }
+        })
+    }
+
+
     //endregion
 }

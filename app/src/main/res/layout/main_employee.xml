@@ -27,10 +27,52 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/lightGray"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <Button
+                    android:id="@+id/type_products_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:background="@drawable/background_line"
+                    android:onClick="ShowTypeProductsButton"
+                    android:text="Виды продуктов"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/type_menu_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="30dp"
+                    android:background="@drawable/background_line"
+                    android:onClick="ShowTypeMenuButton"
+                    android:text="Виды блюд"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
 
                 <LinearLayout
                     android:id="@+id/menu_list"
@@ -44,6 +86,7 @@
             </ScrollView>
 
             <ImageView
+                android:id="@+id/imageView2"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginBottom="5dp"
@@ -55,17 +98,17 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/product_layout"
+            android:id="@+id/order_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <LinearLayout
-                    android:id="@+id/menus_list"
+                    android:id="@+id/orders_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
@@ -74,24 +117,13 @@
                 </LinearLayout>
 
             </ScrollView>
-
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginBottom="5dp"
-                android:onClick="AddProduct"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:srcCompat="@drawable/icon_plus" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/warehouse_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="visible" >
+            android:visibility="gone">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout"
@@ -105,12 +137,12 @@
                     android:id="@+id/reserve_products_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="30dp"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/background_line"
+                    android:onClick="ShowReserveProductsButton"
                     android:text="Запас продуктов"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:onClick="ShowReserveProductsButton"
-                    android:background="@drawable/background_line"
+                    android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -119,12 +151,12 @@
                     android:id="@+id/reserve_menus_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="30dp"
-                    android:text="Запас блюд"
-                    android:onClick="ShowReserveMenusButton"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:layout_marginEnd="10dp"
                     android:background="@drawable/background_line"
+                    android:onClick="ShowReserveMenusButton"
+                    android:text="Плановое количество блюд"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -190,7 +222,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginBottom="20dp"
-            android:onClick="ShowProductsButton"
+            android:onClick="ShowOrdersButton"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -214,7 +246,7 @@
             android:id="@+id/tv_menu_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Меню"
+            android:text="Виды"
             android:textColor="@color/black"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="@+id/icon_menu_menu"
@@ -225,7 +257,7 @@
             android:id="@+id/tv_menu_products"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Продукты"
+            android:text="Заказы"
             android:textColor="@color/black"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="@+id/icon_menu_products"
@@ -244,4 +276,5 @@
             app:layout_constraintTop_toBottomOf="@+id/icon_menu_warehouse" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

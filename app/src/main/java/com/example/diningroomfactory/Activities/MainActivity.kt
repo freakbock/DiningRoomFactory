@@ -24,7 +24,9 @@ class MainActivity : AppCompatActivity() {
         prefs = getSharedPreferences("settings", Context.MODE_PRIVATE)
         if(prefs.contains("tabel")){
             if(prefs.getString("role", "") == "0"){
-
+                val intent = Intent(this, ClientActivity::class.java)
+                startActivity(intent)
+                finish()
             }
             else if(prefs.getString("role", "") == "1"){
                 val intent = Intent(this, EmployeeActivity::class.java)
@@ -61,7 +63,9 @@ class MainActivity : AppCompatActivity() {
                                     editor.apply()
 
                                     if(user.role == "0"){
-
+                                        val intent = Intent(this, ClientActivity::class.java)
+                                        startActivity(intent)
+                                        finish()
                                     }
                                     else if(user.role == "1"){
 

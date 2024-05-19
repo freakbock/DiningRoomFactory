@@ -17,10 +17,6 @@ import com.example.diningroomfactory.DatabaseHelper
 import com.example.diningroomfactory.Models.FactoryMenu
 import com.example.diningroomfactory.Models.FactoryProduct
 import com.example.diningroomfactory.R
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 class ReserveMenuActivity : AppCompatActivity() {
@@ -187,20 +183,21 @@ class ReserveMenuActivity : AppCompatActivity() {
                     }
                 }
             }
+            finish()
 
-            databaseHelper.getFactoryMenusByFactoryId(factoryId){ fms ->
-                for(factoryMenu in factoryMenus)      {
-                    val fm = fms.find { it.menuId == factoryMenu.menuId }
-                    if(fm != null){
-                        fm.menuCount += factoryMenu.menuCount
-                        databaseHelper.updateFactoryMenu(fm.id, fm){}
-                    }
-                    else{
-                        databaseHelper.addFactoryMenu(factoryMenu){}
-                    }
-                }
-                finish()
-            }
+//            databaseHelper.getFactoryMenusByFactoryId(factoryId){ fms ->
+//                for(factoryMenu in factoryMenus)      {
+//                    val fm = fms.find { it.menuId == factoryMenu.menuId }
+//                    if(fm != null){
+//                        fm.menuCount += factoryMenu.menuCount
+//                        databaseHelper.updateFactoryMenu(fm.id, fm){}
+//                    }
+//                    else{
+//                        databaseHelper.addFactoryMenu(factoryMenu){}
+//                    }
+//                }
+//                finish()
+//            }
         }
         else{
             val stringBuilder = StringBuilder()

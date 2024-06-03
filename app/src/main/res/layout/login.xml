@@ -15,7 +15,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/tvAuth"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvAuth"
-        app:srcCompat="@drawable/icon_back_orange" />
+        app:srcCompat="@drawable/icon_back_blue" />
 
     <TextView
         android:id="@+id/tvAuth"
@@ -24,7 +24,7 @@
         android:layout_marginTop="50dp"
         android:text="АВТОРИЗАЦИЯ"
         android:textAlignment="center"
-        android:textColor="@color/orange"
+        android:textColor="@color/DeepSkyBlue"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,7 +37,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="40dp"
         android:text="Табельный номер"
-        android:textColor="@color/darkOrange"
+        android:textColor="@color/DeepSkyBlue"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvAuth" />
@@ -65,7 +65,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="30dp"
         android:text="Пароль"
-        android:textColor="@color/darkOrange"
+        android:textColor="@color/DeepSkyBlue"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etTabel" />
@@ -91,11 +91,11 @@
         android:id="@+id/btnLogin"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        android:onClick="login"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
-        android:background="@color/orange"
+        android:background="@color/DeepSkyBlue"
+        android:onClick="login"
         android:text="Войти"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

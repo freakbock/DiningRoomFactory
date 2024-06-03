@@ -8,6 +8,8 @@ data class Menu(
     @PropertyName("name")
     var name: String = "",
     @PropertyName("products")
-    var products: MutableList<ProductPair> = ArrayList()
+    var products: MutableList<ProductPair> = ArrayList(),
+    @PropertyName("photo")
+    var photo: String = ""
 )
  

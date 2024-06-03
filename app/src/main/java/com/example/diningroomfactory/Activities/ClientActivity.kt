@@ -1,13 +1,21 @@
 package com.example.diningroomfactory.Activities
 
+import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.text.Layout.Alignment
+import android.util.DisplayMetrics
+import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.widget.Button
+import android.widget.GridLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -15,12 +23,21 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.setMargins
 import com.example.diningroomfactory.DatabaseHelper
+import com.example.diningroomfactory.FirebaseStorageHelper
 import com.example.diningroomfactory.Models.FactoryMenu
 import com.example.diningroomfactory.Models.MenuPair
 import com.example.diningroomfactory.Models.Order
+import com.example.diningroomfactory.NTPTimeFetcher
 import com.example.diningroomfactory.R
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -34,7 +51,7 @@ class ClientActivity : AppCompatActivity() {
     lateinit var profile_layout : ConstraintLayout
 
     lateinit var orders_list : LinearLayout
-    lateinit var menu_list : LinearLayout
+    lateinit var menu_list : GridLayout
     lateinit var profile_list : LinearLayout
 
     lateinit var icon_menu_orders : ImageView
@@ -88,15 +105,84 @@ class ClientActivity : AppCompatActivity() {
         ShowMenu()
     }
 
-    fun isToday(date: Date): Boolean {
-        val calendar1 = Calendar.getInstance()
-        calendar1.time = date
+    companion object {
+        private const val REQUEST_CODE_STORAGE_PERMISSION = 100
+    }
 
-        val calendar2 = Calendar.getInstance()
-        calendar2.time = Date()
+    var isCheckPermission = false;
+    private fun requestPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(
+                    Manifest.permission.READ_MEDIA_IMAGES
+                ),
+                REQUEST_CODE_STORAGE_PERMISSION
+            )
+        }
+        else{
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ),
+                REQUEST_CODE_STORAGE_PERMISSION
+            )
+        }
+    }
 
-        return calendar1.get(Calendar.YEAR) == calendar2.get(Calendar.YEAR) &&
-                calendar1.get(Calendar.DAY_OF_YEAR) == calendar2.get(Calendar.DAY_OF_YEAR)
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CODE_STORAGE_PERMISSION) {
+            if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
+
+            } else {
+                isCheckPermission = true
+                Toast.makeText(this, "Для работы некоторых функций требуются разрешения", Toast.LENGTH_SHORT).show()
+            }
+            LoadMenu()
+        }
+    }
+
+    private fun checkPermissions(): Boolean {
+        val readPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+        val writePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val readMediaImagesPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
+
+            if (readMediaImagesPermission != PackageManager.PERMISSION_GRANTED) {
+                return false
+            } else {
+                return true
+            }
+        } else {
+            // Для версий SDK ниже 33 запрашиваем только базовые разрешения
+            if (readPermission != PackageManager.PERMISSION_GRANTED || writePermission != PackageManager.PERMISSION_GRANTED) {
+                return false
+            } else {
+                return true
+            }
+        }
+    }
+
+    // Метод для установки изображения в качестве фона для ImageView
+    private fun setImageBackground(imageView: ImageView, filePath: String) {
+        val drawable = Drawable.createFromPath(filePath)
+        imageView.background = drawable
+    }
+
+    fun ExitFromProfile(view: View){
+
+        val editor = getSharedPreferences("settings", Context.MODE_PRIVATE).edit()
+        editor.clear()
+        editor.apply()
+
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()
+
     }
 
     fun filterOrdersByDate(orders: List<Order>, dateOrder: Date): List<Order> {
@@ -239,7 +325,7 @@ class ClientActivity : AppCompatActivity() {
                 name.layoutParams = nameParams
                 name.setText(factory.factoryName.toUpperCase())
                 name.textSize = 16f
-                name.setTextColor(getColor(R.color.orange))
+                name.setTextColor(getColor(R.color.DeepSkyBlue))
 
                 linearLayout.addView(name)
 
@@ -258,6 +344,9 @@ class ClientActivity : AppCompatActivity() {
         menu_list.removeAllViews()
 
         val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+        CoroutineScope(Dispatchers.IO).launch {
+            dateOrder = NTPTimeFetcher.getCurrentTime()
+        }
         val calendar = Calendar.getInstance()
 
         for (i in 0..6) {
@@ -281,7 +370,7 @@ class ClientActivity : AppCompatActivity() {
             textViewParams.setMargins(dpToPx(0), dpToPx(15), dpToPx(0), dpToPx(10))
             textViewParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
             textView.layoutParams = textViewParams
-            textView.setTextColor(getColor(R.color.orange))
+            textView.setTextColor(getColor(R.color.DeepSkyBlue))
             textView.textAlignment = View.TEXT_ALIGNMENT_CENTER
             textView.setText(dateString)
 
@@ -293,78 +382,135 @@ class ClientActivity : AppCompatActivity() {
         }
     }
 
+    private fun getHalfScreenWidth(): Int {
+        val displayMetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+        val screenWidth = displayMetrics.widthPixels
+        return screenWidth / 2
+    }
+
 
     var menuInCart : MutableList<MenuPair> = ArrayList()
     var dateOrder = Date()
     fun LoadMenu(){
 
+        val firebaseStorage = FirebaseStorageHelper()
+
         icon_addOrder.visibility = View.VISIBLE
         menu_list.removeAllViews()
 
         databaseHelper.getFactoryMenusByFactoryId (factoryId){menus ->
-            for(menu in menus){
 
                 databaseHelper.getOrdersByFactoryId(factoryId){ orders ->
 
+                    var row = 0
+                    var column = 0
+
+                    for(menu in menus){
 
                     databaseHelper.getMenu(menu.menuId){men ->
 
+                        if(men != null){
+                            val linearLayout = LinearLayout(this)
+                            val linearLayoutParams = GridLayout.LayoutParams()
+                            linearLayoutParams.width = getHalfScreenWidth() - dpToPx(30)
+                            linearLayoutParams.height =  dpToPx(250)
+                            linearLayoutParams.rowSpec = GridLayout.spec(row)
+                            linearLayoutParams.columnSpec = GridLayout.spec(column)
+                            linearLayoutParams.setMargins(dpToPx(10),dpToPx(20),dpToPx(10), 0)
+                            linearLayout.orientation = LinearLayout.VERTICAL
+                            linearLayout.background = getDrawable(R.drawable.background_line)
+                            linearLayout.setPadding(0,0,0,dpToPx(10))
+                            linearLayout.layoutParams = linearLayoutParams
 
-                        val linearLayout = LinearLayout(this)
-                        val linearLayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                        linearLayoutParams.setMargins(dpToPx(20),dpToPx(10),dpToPx(20), 0)
-                        linearLayout.orientation = LinearLayout.HORIZONTAL
-                        linearLayout.background = getDrawable(R.drawable.background_line)
-                        linearLayout.setPadding(0,0,0,dpToPx(10))
-                        linearLayout.layoutParams = linearLayoutParams
+                            val image = ImageView(this)
+                            val imageParams = LinearLayout.LayoutParams(getHalfScreenWidth() - dpToPx(30), dpToPx(120))
+                            image.layoutParams = imageParams
+                            if(men.photo.isNotEmpty()) {
+                                if(!isCheckPermission){
+                                    if(checkPermissions()){
+                                        Log.d("Employee Activity", "Права есть");
+                                        val localFilePath = "${cacheDir}/${men.name}.jpg"
+                                        val localFile = File(localFilePath)
 
-                        val name = TextView(this)
-                        val nameParams = LinearLayout.LayoutParams(dpToPx(70), ConstraintLayout.LayoutParams.WRAP_CONTENT)
-                        nameParams.setMargins(0, 0,0,0)
-                        nameParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
-                        name.layoutParams = nameParams
-                        name.setText(men!!.name)
-                        name.textSize = 16f
-                        name.setTextColor(getColor(R.color.orange))
-
-                        val count = TextView(this)
-                        val countParams = LinearLayout.LayoutParams(dpToPx(150), LinearLayout.LayoutParams.WRAP_CONTENT)
-                        countParams.setMargins(dpToPx(0), dpToPx(10), dpToPx(0), dpToPx(10))
-                        countParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
-                        count.layoutParams = countParams
-
-                        var menuCount = menu.menuCount
-                        for(order in filterOrdersByDate(orders, dateOrder)){
-                            for(orderMenu in order.menu){
-                                if(orderMenu.menuId == menu.menuId){
-                                    menuCount -= orderMenu.number
+                                            // Если изображения нет на устройстве, загружаем его из Firebase Storage
+                                            val imageUrl = men.photo // Получаем ссылку на изображение из menu.photo
+                                            firebaseStorage.downloadImage(this, imageUrl, localFile,
+                                                onSuccess = {
+                                                    // Изображение успешно загружено, устанавливаем его фоном
+                                                    setImageBackground(image, localFilePath)
+                                                },
+                                                onFailure = { exception ->
+                                                    // Произошла ошибка при загрузке изображения
+                                                    Log.e("EmployeeActivity| LoadMenu ", "Не удалось загрузить фото: ${exception.message}")
+                                                }
+                                            )
+                                    }
+                                    else{
+                                        requestPermissions()
+                                    }
+                                }
+                                else{
+                                    image.setBackgroundResource(R.drawable.icon_menu_plug)
                                 }
                             }
-                        }
+                            else{
+                                image.setBackgroundResource(R.drawable.icon_menu_plug)
+                            }
 
-                        count.setText(menuCount.toString() + " шт. в наличии")
-                        count.textSize = 16f
-                        count.setTextColor(getColor(R.color.orange))
+                            val name = TextView(this)
+                            val nameParams = LinearLayout.LayoutParams(dpToPx(70), ConstraintLayout.LayoutParams.WRAP_CONTENT)
+                            nameParams.setMargins(0, dpToPx(10),0,0)
+                            nameParams.gravity = Gravity.CENTER_HORIZONTAL
+                            name.layoutParams = nameParams
+                            name.setText(men.name)
+                            name.textSize = 18f
+                            name.setTextColor(getColor(R.color.DeepSkyBlue))
 
-                        val countInCart = TextView(this)
-                        val countInCartParams = LinearLayout.LayoutParams(dpToPx(40), dpToPx(40))
-                        countInCartParams.setMargins(dpToPx(0), dpToPx(15), dpToPx(0), dpToPx(10))
-                        countInCartParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
-                        countInCart.layoutParams = countInCartParams
-                        countInCart.setText("0")
-                        countInCart.setTextColor(getColor(R.color.orange))
-                        countInCart.textAlignment = View.TEXT_ALIGNMENT_CENTER
+                            val count = TextView(this)
+                            val countParams = LinearLayout.LayoutParams(dpToPx(50), LinearLayout.LayoutParams.WRAP_CONTENT)
+                            countParams.setMargins(dpToPx(0), dpToPx(10), dpToPx(0), dpToPx(10))
+                            countParams.gravity = Gravity.CENTER_HORIZONTAL
+                            count.layoutParams = countParams
 
-                        val addButton = Button(this)
-                        val addButtonParams = LinearLayout.LayoutParams(dpToPx(40), dpToPx(40))
-                        addButtonParams.setMargins(dpToPx(0), dpToPx(10), dpToPx(0), dpToPx(10))
-                        addButtonParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
-                        addButton.layoutParams = addButtonParams
-                        addButton.setText("+")
-                        addButton.setOnClickListener {
+                            var menuCount = menu.menuCount
+                            for(order in filterOrdersByDate(orders, dateOrder)){
+                                for(orderMenu in order.menu){
+                                    if(orderMenu.menuId == menu.menuId){
+                                        menuCount -= orderMenu.number
+                                    }
+                                }
+                            }
 
-                            val menuCart = menuInCart.firstOrNull{it.menuId == menu.menuId}
-                            if(menuCart != null){
+                            count.setText(menuCount.toString() + " шт.")
+                            count.textSize = 16f
+                            count.setTextColor(getColor(R.color.DeepSkyBlue))
+
+                            val linearLayoutChildren = LinearLayout(this)
+                            val linearLayoutChildrenParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dpToPx(50))
+                            linearLayoutChildren.layoutParams = linearLayoutChildrenParams
+                            linearLayoutChildren.gravity = Gravity.CENTER_HORIZONTAL
+                            linearLayoutChildren.orientation = LinearLayout.HORIZONTAL
+
+                            val countInCart = TextView(this)
+                            val countInCartParams = LinearLayout.LayoutParams(dpToPx(20), dpToPx(40))
+                            countInCartParams.setMargins(dpToPx(0), dpToPx(15), dpToPx(0), dpToPx(10))
+                            countInCartParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
+                            countInCart.layoutParams = countInCartParams
+                            countInCart.setText("0")
+                            countInCart.setTextColor(getColor(R.color.DeepSkyBlue))
+                            countInCart.textAlignment = View.TEXT_ALIGNMENT_CENTER
+
+                            val addButton = Button(this)
+                            val addButtonParams = LinearLayout.LayoutParams(dpToPx(40), dpToPx(40))
+                            addButtonParams.setMargins(dpToPx(0), dpToPx(10), dpToPx(0), dpToPx(10))
+                            addButtonParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
+                            addButton.layoutParams = addButtonParams
+                            addButton.setText("+")
+                            addButton.setOnClickListener {
+
+                                val menuCart = menuInCart.firstOrNull{it.menuId == menu.menuId}
+                                if(menuCart != null){
                                     if(menuCount <= menuCart.number){
                                         Toast.makeText(this, "${men.name} кончился", Toast.LENGTH_SHORT).show()
                                     }
@@ -372,45 +518,59 @@ class ClientActivity : AppCompatActivity() {
                                         menuInCart.firstOrNull{it.menuId == menu.menuId}!!.number ++
                                         countInCart.setText("${menuInCart.firstOrNull{it.menuId == menu.menuId}!!.number}")
                                     }
-                            }
-                            else {
-                                menuInCart.add(MenuPair(menu.menuId, 1))
-                                countInCart.setText("1")
-                            }
-
-                        }
-
-                        val removeButton = Button(this)
-                        val removeButtonParams = LinearLayout.LayoutParams(dpToPx(40), dpToPx(40))
-                        removeButtonParams.setMargins(dpToPx(0), dpToPx(10), dpToPx(0), dpToPx(10))
-                        removeButtonParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
-                        removeButton.layoutParams = removeButtonParams
-                        removeButton.setText("-")
-                        removeButton.setOnClickListener {
-
-                            val menuCart = menuInCart.firstOrNull{it.menuId == menu.menuId}
-                            if(menuCart != null){
-                                if(menuCart.number == 1){
-                                    menuInCart.remove(menuCart)
+                                }
+                                else if(menuCount == 0){
                                     countInCart.setText("0")
+                                    Toast.makeText(this, "Товара нет в наличии", Toast.LENGTH_SHORT).show()
                                 }
-                                else{
-                                    menuInCart.firstOrNull{it.menuId == menu.menuId}!!.number --
-                                    countInCart.setText("${menuInCart.firstOrNull { it.menuId == menu.menuId }!!.number}")
+                                else {
+                                    menuInCart.add(MenuPair(menu.menuId, 1))
+                                    countInCart.setText("1")
                                 }
+
                             }
 
+                            val removeButton = Button(this)
+                            val removeButtonParams = LinearLayout.LayoutParams(dpToPx(40), dpToPx(40))
+                            removeButtonParams.setMargins(dpToPx(0), dpToPx(10), dpToPx(0), dpToPx(10))
+                            removeButtonParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
+                            removeButton.layoutParams = removeButtonParams
+                            removeButton.setText("-")
+                            removeButton.setOnClickListener {
 
+                                val menuCart = menuInCart.firstOrNull{it.menuId == menu.menuId}
+                                if(menuCart != null){
+                                    if(menuCart.number == 1){
+                                        menuInCart.remove(menuCart)
+                                        countInCart.setText("0")
+                                    }
+                                    else{
+                                        menuInCart.firstOrNull{it.menuId == menu.menuId}!!.number --
+                                        countInCart.setText("${menuInCart.firstOrNull { it.menuId == menu.menuId }!!.number}")
+                                    }
+                                }
+
+
+                            }
+
+                            linearLayoutChildren.addView(addButton)
+                            linearLayoutChildren.addView(countInCart)
+                            linearLayoutChildren.addView(removeButton)
+
+
+                            linearLayout.addView(image)
+                            linearLayout.addView(name)
+                            linearLayout.addView(count)
+                            linearLayout.addView(linearLayoutChildren)
+
+                            menu_list.addView(linearLayout)
+
+                            column++
+                            if (column == 2) {
+                                column = 0
+                                row++
+                            }
                         }
-
-
-                        linearLayout.addView(name)
-                        linearLayout.addView(count)
-                        linearLayout.addView(addButton)
-                        linearLayout.addView(countInCart)
-                        linearLayout.addView(removeButton)
-
-                        menu_list.addView(linearLayout)
 
                     }
 
@@ -447,7 +607,7 @@ class ClientActivity : AppCompatActivity() {
                         name.layoutParams = nameParams
                         name.setText("Заказ на ${dateTimeFormat.format(order.date)} в столовой ${factory!!.factoryName}")
                         name.textSize = 16f
-                        name.setTextColor(getColor(R.color.orange))
+                        name.setTextColor(getColor(R.color.DeepSkyBlue))
 
                         val status = TextView(this)
                         val statusParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
@@ -461,11 +621,19 @@ class ClientActivity : AppCompatActivity() {
                             status.setText("Статус: Получен")
                         }
                         status.textSize = 16f
-                        status.setTextColor(getColor(R.color.orange))
+                        status.setTextColor(getColor(R.color.DeepSkyBlue))
 
 
                         linearLayout.addView(name)
                         linearLayout.addView(status)
+
+                        linearLayout.setOnClickListener{
+
+                            val intent = Intent(this@ClientActivity, OrderActivity::class.java)
+                            intent.putExtra("orderId", order.id)
+                            startActivity(intent)
+
+                        }
 
                         orders_list.addView(linearLayout)
 
@@ -556,11 +724,11 @@ class ClientActivity : AppCompatActivity() {
 
         icon_menu_orders.setBackgroundResource(R.drawable.icon_order)
         icon_menu_menu.setBackgroundResource(R.drawable.icon_menu)
-        icon_menu_profile.setBackgroundResource(R.drawable.icon_profile_orange)
+        icon_menu_profile.setBackgroundResource(R.drawable.icon_profile_blue)
 
         tv_menu_menu.setTextColor(getColor(R.color.black))
         tv_menu_orders.setTextColor(getColor(R.color.black))
-        tv_menu_profile.setTextColor(getColor(R.color.orange))
+        tv_menu_profile.setTextColor(getColor(R.color.DeepSkyBlue))
 
         LoadProfile()
 
@@ -575,10 +743,10 @@ class ClientActivity : AppCompatActivity() {
         icon_addOrder.visibility = View.GONE
 
         icon_menu_orders.setBackgroundResource(R.drawable.icon_order)
-        icon_menu_menu.setBackgroundResource(R.drawable.icon_menu_orange)
+        icon_menu_menu.setBackgroundResource(R.drawable.icon_menu_blue)
         icon_menu_profile.setBackgroundResource(R.drawable.icon_profile)
 
-        tv_menu_menu.setTextColor(getColor(R.color.orange))
+        tv_menu_menu.setTextColor(getColor(R.color.DeepSkyBlue))
         tv_menu_orders.setTextColor(getColor(R.color.black))
         tv_menu_profile.setTextColor(getColor(R.color.black))
 
@@ -593,12 +761,12 @@ class ClientActivity : AppCompatActivity() {
 
         icon_addOrder.visibility = View.GONE
 
-        icon_menu_orders.setBackgroundResource(R.drawable.icon_order_orange)
+        icon_menu_orders.setBackgroundResource(R.drawable.icon_order_blue)
         icon_menu_menu.setBackgroundResource(R.drawable.icon_menu)
         icon_menu_profile.setBackgroundResource(R.drawable.icon_profile)
 
         tv_menu_menu.setTextColor(getColor(R.color.black))
-        tv_menu_orders.setTextColor(getColor(R.color.orange))
+        tv_menu_orders.setTextColor(getColor(R.color.DeepSkyBlue))
         tv_menu_profile.setTextColor(getColor(R.color.black))
 
         LoadOrders()

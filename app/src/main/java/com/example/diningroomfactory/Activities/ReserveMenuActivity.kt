@@ -63,7 +63,7 @@ class ReserveMenuActivity : AppCompatActivity() {
                 name.layoutParams = nameParams
                 name.setText(menu.name.toUpperCase())
                 name.textSize = 16f
-                name.setTextColor(getColor(R.color.orange))
+                name.setTextColor(getColor(R.color.DeepSkyBlue))
 
                 val count = EditText(this)
                 val countParams = LinearLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, dpToPx(40))
@@ -76,6 +76,7 @@ class ReserveMenuActivity : AppCompatActivity() {
                 count.setTextColor(getColor(R.color.black))
                 count.setHintTextColor(getColor(R.color.agate_gray))
                 count.setHint("количество порций")
+                count.inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
                 count.addTextChangedListener{
                     if(count.text.toString().isNotEmpty()){
                         if(count.text.toString() == "0"){

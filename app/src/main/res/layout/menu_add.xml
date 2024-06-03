@@ -14,7 +14,7 @@
         android:onClick="BackToMenu"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textView2"
-        app:srcCompat="@drawable/icon_back_orange" />
+        app:srcCompat="@drawable/icon_back_blue" />
 
     <TextView
         android:id="@+id/textView2"
@@ -24,7 +24,7 @@
         android:maxLines="2"
         android:text="Добавление нового\n пункта меню"
         android:textAlignment="center"
-        android:textColor="@color/orange"
+        android:textColor="@color/DeepSkyBlue"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,7 +37,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:text="Название"
-        android:textColor="@color/darkOrange"
+        android:textColor="@color/DeepSkyBlue"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
@@ -56,18 +56,42 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
+    <Button
+        android:onClick="AddPhoto"
+        android:id="@+id/button2"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/border_radius_button"
+        android:text="Добавить фото"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/name" />
+
+    <TextView
+        android:id="@+id/photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="Фото нет"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/button2"
+        app:layout_constraintStart_toEndOf="@+id/button2"
+        app:layout_constraintTop_toTopOf="@+id/button2" />
+
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
         android:background="@color/lightGray_2"
         app:layout_constraintBottom_toTopOf="@+id/button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name">
+        app:layout_constraintTop_toBottomOf="@+id/button2">
 
         <LinearLayout
             android:id="@+id/menus_list"
@@ -88,7 +112,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
-        android:background="@color/orange"
+        android:background="@color/DeepSkyBlue"
         android:onClick="CreateMenu"
         android:text="Создать"
         app:layout_constraintBottom_toBottomOf="parent"

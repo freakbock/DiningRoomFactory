@@ -7,7 +7,14 @@
     <color name="purpure">#8A2BE2</color>
     <color name="emerald">#00FF00</color>
     <color name="corall">#FF6F61</color>
+
     <color name="lightBlue">#4169E1</color>
+    <color name="blue">#0000FF</color>
+    <color name="mediumBlue">#0000CD</color>
+    <color name="royalBlue">#4169E1</color>
+    <color name="DeepSkyBlue">#00BFFF</color>
+    <color name="skyBlue">#87CEEB</color>
+
     <color name="lightGray">#E0D8DE</color>
     <color name="lightGray_2">#d9d4d8</color>
 

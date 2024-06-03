@@ -6,5 +6,7 @@ data class Product(
     @PropertyName("id")
     var id: String = "",
     @PropertyName("name")
-    var name: String = ""
+    var name: String = "",
+    @PropertyName("photo")
+    var photo: String = ""
 )

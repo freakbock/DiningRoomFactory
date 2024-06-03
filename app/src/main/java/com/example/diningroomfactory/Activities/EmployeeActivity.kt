@@ -188,7 +188,7 @@ class EmployeeActivity : AppCompatActivity() {
         icon_menu_warehouse.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.icon_warehouse))
         icon_menu_menu.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.icon_menu))
 
-        tv_menu_product.setTextColor(getColor(R.color.DeepSkyBlue))
+        tv_menu_product.setTextColor(getColor(R.color.MidnightBlue))
         tv_menu_warehouse.setTextColor(getColor(R.color.black))
         tv_menu_menu.setTextColor(getColor(R.color.black))
 
@@ -202,7 +202,7 @@ class EmployeeActivity : AppCompatActivity() {
         warehouse_layout.visibility = View.GONE
         order_layout.visibility = View.GONE
 
-        type_products_button.setTextColor(getColor(R.color.DeepSkyBlue))
+        type_products_button.setTextColor(getColor(R.color.MidnightBlue))
         type_menu_button.setTextColor(getColor(R.color.black))
 
         icon_menu_product.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.icon_product))
@@ -211,7 +211,7 @@ class EmployeeActivity : AppCompatActivity() {
 
         tv_menu_product.setTextColor(getColor(R.color.black))
         tv_menu_warehouse.setTextColor(getColor(R.color.black))
-        tv_menu_menu.setTextColor(getColor(R.color.DeepSkyBlue))
+        tv_menu_menu.setTextColor(getColor(R.color.MidnightBlue))
 
         LoadProducts()
     }
@@ -224,7 +224,7 @@ class EmployeeActivity : AppCompatActivity() {
         order_layout.visibility = View.GONE
 
         type_products_button.setTextColor(getColor(R.color.black))
-        type_menu_button.setTextColor(getColor(R.color.DeepSkyBlue))
+        type_menu_button.setTextColor(getColor(R.color.MidnightBlue))
 
         icon_menu_product.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.icon_product))
         icon_menu_warehouse.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.icon_warehouse))
@@ -232,7 +232,7 @@ class EmployeeActivity : AppCompatActivity() {
 
         tv_menu_product.setTextColor(getColor(R.color.black))
         tv_menu_warehouse.setTextColor(getColor(R.color.black))
-        tv_menu_menu.setTextColor(getColor(R.color.DeepSkyBlue))
+        tv_menu_menu.setTextColor(getColor(R.color.MidnightBlue))
 
         LoadMenu()
     }
@@ -247,10 +247,10 @@ class EmployeeActivity : AppCompatActivity() {
         icon_menu_menu.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.icon_menu))
 
         tv_menu_product.setTextColor(getColor(R.color.black))
-        tv_menu_warehouse.setTextColor(getColor(R.color.DeepSkyBlue))
+        tv_menu_warehouse.setTextColor(getColor(R.color.MidnightBlue))
         tv_menu_menu.setTextColor(getColor(R.color.black))
 
-        reserve_products_button.setTextColor(getColor(R.color.DeepSkyBlue))
+        reserve_products_button.setTextColor(getColor(R.color.MidnightBlue))
         reserve_menus_button.setTextColor(getColor(R.color.black))
         isReserverProducts = true
         LoadReserveProducts()
@@ -267,11 +267,11 @@ class EmployeeActivity : AppCompatActivity() {
         icon_menu_menu.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.icon_menu))
 
         tv_menu_product.setTextColor(getColor(R.color.black))
-        tv_menu_warehouse.setTextColor(getColor(R.color.DeepSkyBlue))
+        tv_menu_warehouse.setTextColor(getColor(R.color.MidnightBlue))
         tv_menu_menu.setTextColor(getColor(R.color.black))
 
         reserve_products_button.setTextColor(getColor(R.color.black))
-        reserve_menus_button.setTextColor(getColor(R.color.DeepSkyBlue))
+        reserve_menus_button.setTextColor(getColor(R.color.MidnightBlue))
         isReserverProducts = false
         LoadReserveMenus()
 
@@ -417,7 +417,7 @@ class EmployeeActivity : AppCompatActivity() {
 
                                 name.setText(spannableString)
                                 name.textSize = 16f
-                                name.setTextColor(getColor(R.color.DeepSkyBlue))
+                                name.setTextColor(getColor(R.color.MidnightBlue))
 
                                 val acceptButton = Button(this)
                                 val acceptButtonParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dpToPx(50))
@@ -426,7 +426,7 @@ class EmployeeActivity : AppCompatActivity() {
                                 acceptButton.layoutParams = acceptButtonParams
                                 acceptButton.setText("ВЫДАТЬ")
                                 acceptButton.textSize = 16f
-                                acceptButton.setTextColor(getColor(R.color.DeepSkyBlue))
+                                acceptButton.setTextColor(getColor(R.color.MidnightBlue))
                                 acceptButton.setOnClickListener {
                                     order.status = 1
                                     databaseHelper.updateOrder(order.id, order){}
@@ -479,7 +479,7 @@ class EmployeeActivity : AppCompatActivity() {
                     name.layoutParams = nameParams
                     name.setText(menu.name.toUpperCase())
                     name.textSize = 16f
-                    name.setTextColor(getColor(R.color.DeepSkyBlue))
+                    name.setTextColor(getColor(R.color.MidnightBlue))
 
                     val count = EditText(this)
                     val countParams = LinearLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, dpToPx(40))
@@ -489,7 +489,7 @@ class EmployeeActivity : AppCompatActivity() {
                     count.textAlignment = View.TEXT_ALIGNMENT_TEXT_END
                     count.layoutParams = countParams
                     count.setPadding(0,dpToPx(10),dpToPx(10),dpToPx(10))
-                    count.setTextColor(getColor(R.color.DeepSkyBlue))
+                    count.setTextColor(getColor(R.color.MidnightBlue))
                     count.textSize = 16f
                     if(factoryMenus.any { it.menuId == menu.id }){
                         count.setText(factoryMenus.find { it.menuId == menu.id }!!.menuCount.toString())
@@ -553,7 +553,7 @@ class EmployeeActivity : AppCompatActivity() {
                     name.layoutParams = nameParams
                     name.setText(product.name.toUpperCase())
                     name.textSize = 16f
-                    name.setTextColor(getColor(R.color.DeepSkyBlue))
+                    name.setTextColor(getColor(R.color.MidnightBlue))
 
                     val count = TextView(this)
                     val countParams = LinearLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, dpToPx(40))
@@ -562,7 +562,7 @@ class EmployeeActivity : AppCompatActivity() {
                     count.textAlignment = View.TEXT_ALIGNMENT_TEXT_END
                     count.layoutParams = countParams
                     count.setPadding(0,dpToPx(10),dpToPx(10),dpToPx(10))
-                    count.setTextColor(getColor(R.color.DeepSkyBlue))
+                    count.setTextColor(getColor(R.color.MidnightBlue))
                     count.textSize = 16f
                     if(factoryProducts.any { it.productId == product.id }){
                         count.setText(factoryProducts.find { it.productId == product.id }!!.productCount.toString())
@@ -648,7 +648,7 @@ class EmployeeActivity : AppCompatActivity() {
                 name.layoutParams = nameParams
                 name.setText(product.name)
                 name.textSize = 18f
-                name.setTextColor(getColor(R.color.DeepSkyBlue))
+                name.setTextColor(getColor(R.color.MidnightBlue))
 
 
                 linearLayout.addView(image)
@@ -845,7 +845,7 @@ class EmployeeActivity : AppCompatActivity() {
                 name.layoutParams = nameParams
                 name.setText(menu.name)
                 name.textSize = 18f
-                name.setTextColor(getColor(R.color.DeepSkyBlue))
+                name.setTextColor(getColor(R.color.MidnightBlue))
 
 
                 linearLayout.addView(image)

@@ -2,6 +2,7 @@ package com.example.diningroomfactory
 
 import android.content.Context
 import android.util.Log
+import com.example.diningroomfactory.Models.ExtendFactoryMenu
 import com.example.diningroomfactory.Models.Factory
 import com.example.diningroomfactory.Models.FactoryMenu
 import com.example.diningroomfactory.Models.FactoryProduct
@@ -47,6 +48,44 @@ class DatabaseHelper  {
     private val menuRef: DatabaseReference by lazy {
         database.getReference("menu")
     }
+    private val extendFactoryMenu: DatabaseReference by lazy {
+        database.getReference("extendFactoryMenu")
+    }
+
+
+    //region Extend Factory Menu Data
+
+    fun addExtendFactoryMenu(menu: ExtendFactoryMenu, onComplete: (Boolean) -> Unit){
+        val extendFactoryMenuId = extendFactoryMenu.push().key ?: return
+        menu.id = extendFactoryMenuId
+        extendFactoryMenu.child(extendFactoryMenuId).setValue(menu)
+            .addOnCompleteListener { task ->
+                onComplete(task.isSuccessful)
+            }
+    }
+
+    fun getExtendFactoryMenusById(factoryId: String, callback: (List<ExtendFactoryMenu>) -> Unit) {
+        extendFactoryMenu.addListenerForSingleValueEvent(object : ValueEventListener {
+            val menus = mutableListOf<ExtendFactoryMenu>()
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (menuSnapshot in snapshot.children) {
+                    val menu = menuSnapshot.getValue(ExtendFactoryMenu::class.java)
+                    menu?.let {
+                        if (it.factoryId == factoryId) {
+                            menus.add(it)
+                        }
+                    }
+                }
+                callback(menus)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                callback(menus)
+            }
+        })
+    }
+
+    //endregion
 
 
     //region Menu Data

@@ -59,7 +59,7 @@ class OrderActivity : AppCompatActivity() {
                                     name.layoutParams = nameParams
                                     name.setText(men.name)
                                     name.setTextSize(16f)
-                                    name.setTextColor(getColor(R.color.DeepSkyBlue))
+                                    name.setTextColor(getColor(R.color.MidnightBlue))
                                     name.ellipsize = TextUtils.TruncateAt.END
 
                                     val count = TextView(this)
@@ -68,7 +68,7 @@ class OrderActivity : AppCompatActivity() {
                                     count.layoutParams = countParams
                                     count.setText("в количестве " + menu.number.toString() + " шт.")
                                     count.setTextSize(16f)
-                                    count.setTextColor(getColor(R.color.DeepSkyBlue))
+                                    count.setTextColor(getColor(R.color.MidnightBlue))
 
                                     parent.addView(name)
                                     parent.addView(count)

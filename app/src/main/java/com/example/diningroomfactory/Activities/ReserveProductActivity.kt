@@ -63,7 +63,7 @@ class ReserveProductActivity : AppCompatActivity(){
                 name.layoutParams = nameParams
                 name.setText(product.name.toUpperCase())
                 name.textSize = 16f
-                name.setTextColor(getColor(R.color.DeepSkyBlue))
+                name.setTextColor(getColor(R.color.MidnightBlue))
 
                 val count = EditText(this)
                 val countParams = LinearLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, dpToPx(40))

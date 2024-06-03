@@ -24,7 +24,7 @@
         android:maxLines="2"
         android:text="Заказ"
         android:textAlignment="center"
-        android:textColor="@color/DeepSkyBlue"
+        android:textColor="@color/MidnightBlue"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,7 +40,7 @@
         android:ellipsize="end"
         android:maxLines="2"
         android:text="test"
-        android:textColor="@color/DeepSkyBlue"
+        android:textColor="@color/MidnightBlue"
         android:textColorHint="@color/lightGray"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -53,9 +53,9 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="10dp"
         android:background="@color/lightGray_2"
-        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/name">
@@ -67,25 +67,9 @@
             android:orientation="vertical">
 
 
-
         </LinearLayout>
 
     </ScrollView>
-
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
-        android:background="@color/DeepSkyBlue"
-        android:onClick="CreateMenu"
-        android:text="Создать"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

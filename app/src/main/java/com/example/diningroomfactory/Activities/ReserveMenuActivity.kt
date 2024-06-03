@@ -14,9 +14,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.addTextChangedListener
 import com.example.diningroomfactory.DatabaseHelper
+import com.example.diningroomfactory.Models.ExtendFactoryMenu
 import com.example.diningroomfactory.Models.FactoryMenu
 import com.example.diningroomfactory.Models.FactoryProduct
 import com.example.diningroomfactory.R
+import java.util.Date
 import kotlin.math.roundToInt
 
 class ReserveMenuActivity : AppCompatActivity() {
@@ -63,7 +65,7 @@ class ReserveMenuActivity : AppCompatActivity() {
                 name.layoutParams = nameParams
                 name.setText(menu.name.toUpperCase())
                 name.textSize = 16f
-                name.setTextColor(getColor(R.color.DeepSkyBlue))
+                name.setTextColor(getColor(R.color.MidnightBlue))
 
                 val count = EditText(this)
                 val countParams = LinearLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, dpToPx(40))
@@ -184,21 +186,14 @@ class ReserveMenuActivity : AppCompatActivity() {
                     }
                 }
             }
-            finish()
 
-//            databaseHelper.getFactoryMenusByFactoryId(factoryId){ fms ->
-//                for(factoryMenu in factoryMenus)      {
-//                    val fm = fms.find { it.menuId == factoryMenu.menuId }
-//                    if(fm != null){
-//                        fm.menuCount += factoryMenu.menuCount
-//                        databaseHelper.updateFactoryMenu(fm.id, fm){}
-//                    }
-//                    else{
-//                        databaseHelper.addFactoryMenu(factoryMenu){}
-//                    }
-//                }
-//                finish()
-//            }
+            for(factoryMenu in factoryMenus){
+                databaseHelper.addExtendFactoryMenu(ExtendFactoryMenu("", factoryMenu.factoryId, factoryMenu.menuId, factoryMenu.menuCount, Date())) {
+
+                }
+            }
+
+            finish()
         }
         else{
             val stringBuilder = StringBuilder()

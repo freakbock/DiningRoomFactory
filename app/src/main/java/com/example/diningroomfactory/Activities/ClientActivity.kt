@@ -325,7 +325,7 @@ class ClientActivity : AppCompatActivity() {
                 name.layoutParams = nameParams
                 name.setText(factory.factoryName.toUpperCase())
                 name.textSize = 16f
-                name.setTextColor(getColor(R.color.DeepSkyBlue))
+                name.setTextColor(getColor(R.color.MidnightBlue))
 
                 linearLayout.addView(name)
 
@@ -370,7 +370,7 @@ class ClientActivity : AppCompatActivity() {
             textViewParams.setMargins(dpToPx(0), dpToPx(15), dpToPx(0), dpToPx(10))
             textViewParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
             textView.layoutParams = textViewParams
-            textView.setTextColor(getColor(R.color.DeepSkyBlue))
+            textView.setTextColor(getColor(R.color.MidnightBlue))
             textView.textAlignment = View.TEXT_ALIGNMENT_CENTER
             textView.setText(dateString)
 
@@ -403,181 +403,211 @@ class ClientActivity : AppCompatActivity() {
 
                 databaseHelper.getOrdersByFactoryId(factoryId){ orders ->
 
-                    var row = 0
-                    var column = 0
+                    databaseHelper.getExtendFactoryMenusById(factoryId){ extendFactoryMenu ->
 
-                    for(menu in menus){
+                        var row = 0
+                        var column = 0
 
-                    databaseHelper.getMenu(menu.menuId){men ->
+                        for(menu in menus){
 
-                        if(men != null){
-                            val linearLayout = LinearLayout(this)
-                            val linearLayoutParams = GridLayout.LayoutParams()
-                            linearLayoutParams.width = getHalfScreenWidth() - dpToPx(30)
-                            linearLayoutParams.height =  dpToPx(250)
-                            linearLayoutParams.rowSpec = GridLayout.spec(row)
-                            linearLayoutParams.columnSpec = GridLayout.spec(column)
-                            linearLayoutParams.setMargins(dpToPx(10),dpToPx(20),dpToPx(10), 0)
-                            linearLayout.orientation = LinearLayout.VERTICAL
-                            linearLayout.background = getDrawable(R.drawable.background_line)
-                            linearLayout.setPadding(0,0,0,dpToPx(10))
-                            linearLayout.layoutParams = linearLayoutParams
+                            databaseHelper.getMenu(menu.menuId){men ->
 
-                            val image = ImageView(this)
-                            val imageParams = LinearLayout.LayoutParams(getHalfScreenWidth() - dpToPx(30), dpToPx(120))
-                            image.layoutParams = imageParams
-                            if(men.photo.isNotEmpty()) {
-                                if(!isCheckPermission){
-                                    if(checkPermissions()){
-                                        Log.d("Employee Activity", "Права есть");
-                                        val localFilePath = "${cacheDir}/${men.name}.jpg"
-                                        val localFile = File(localFilePath)
+                                if(men != null){
+                                    val linearLayout = LinearLayout(this)
+                                    val linearLayoutParams = GridLayout.LayoutParams()
+                                    linearLayoutParams.width = getHalfScreenWidth() - dpToPx(30)
+                                    linearLayoutParams.height =  dpToPx(250)
+                                    linearLayoutParams.rowSpec = GridLayout.spec(row)
+                                    linearLayoutParams.columnSpec = GridLayout.spec(column)
+                                    linearLayoutParams.setMargins(dpToPx(10),dpToPx(20),dpToPx(10), 0)
+                                    linearLayout.orientation = LinearLayout.VERTICAL
+                                    linearLayout.background = getDrawable(R.drawable.background_line)
+                                    linearLayout.setPadding(0,0,0,dpToPx(10))
+                                    linearLayout.layoutParams = linearLayoutParams
 
-                                            // Если изображения нет на устройстве, загружаем его из Firebase Storage
-                                            val imageUrl = men.photo // Получаем ссылку на изображение из menu.photo
-                                            firebaseStorage.downloadImage(this, imageUrl, localFile,
-                                                onSuccess = {
-                                                    // Изображение успешно загружено, устанавливаем его фоном
-                                                    setImageBackground(image, localFilePath)
-                                                },
-                                                onFailure = { exception ->
-                                                    // Произошла ошибка при загрузке изображения
-                                                    Log.e("EmployeeActivity| LoadMenu ", "Не удалось загрузить фото: ${exception.message}")
-                                                }
-                                            )
+                                    val image = ImageView(this)
+                                    val imageParams = LinearLayout.LayoutParams(getHalfScreenWidth() - dpToPx(30), dpToPx(120))
+                                    image.layoutParams = imageParams
+                                    if(men.photo.isNotEmpty()) {
+                                        if(!isCheckPermission){
+                                            if(checkPermissions()){
+                                                Log.d("Employee Activity", "Права есть");
+                                                val localFilePath = "${cacheDir}/${men.name}.jpg"
+                                                val localFile = File(localFilePath)
+
+                                                // Если изображения нет на устройстве, загружаем его из Firebase Storage
+                                                val imageUrl = men.photo // Получаем ссылку на изображение из menu.photo
+                                                firebaseStorage.downloadImage(this, imageUrl, localFile,
+                                                    onSuccess = {
+                                                        // Изображение успешно загружено, устанавливаем его фоном
+                                                        setImageBackground(image, localFilePath)
+                                                    },
+                                                    onFailure = { exception ->
+                                                        // Произошла ошибка при загрузке изображения
+                                                        Log.e("EmployeeActivity| LoadMenu ", "Не удалось загрузить фото: ${exception.message}")
+                                                    }
+                                                )
+                                            }
+                                            else{
+                                                requestPermissions()
+                                            }
+                                        }
+                                        else{
+                                            image.setBackgroundResource(R.drawable.icon_menu_plug)
+                                        }
                                     }
                                     else{
-                                        requestPermissions()
+                                        image.setBackgroundResource(R.drawable.icon_menu_plug)
                                     }
-                                }
-                                else{
-                                    image.setBackgroundResource(R.drawable.icon_menu_plug)
-                                }
-                            }
-                            else{
-                                image.setBackgroundResource(R.drawable.icon_menu_plug)
-                            }
 
-                            val name = TextView(this)
-                            val nameParams = LinearLayout.LayoutParams(dpToPx(70), ConstraintLayout.LayoutParams.WRAP_CONTENT)
-                            nameParams.setMargins(0, dpToPx(10),0,0)
-                            nameParams.gravity = Gravity.CENTER_HORIZONTAL
-                            name.layoutParams = nameParams
-                            name.setText(men.name)
-                            name.textSize = 18f
-                            name.setTextColor(getColor(R.color.DeepSkyBlue))
+                                    val name = TextView(this)
+                                    val nameParams = LinearLayout.LayoutParams(dpToPx(70), ConstraintLayout.LayoutParams.WRAP_CONTENT)
+                                    nameParams.setMargins(0, dpToPx(10),0,0)
+                                    nameParams.gravity = Gravity.CENTER_HORIZONTAL
+                                    name.layoutParams = nameParams
+                                    name.setText(men.name)
+                                    name.textSize = 18f
+                                    name.setTextColor(getColor(R.color.MidnightBlue))
 
-                            val count = TextView(this)
-                            val countParams = LinearLayout.LayoutParams(dpToPx(50), LinearLayout.LayoutParams.WRAP_CONTENT)
-                            countParams.setMargins(dpToPx(0), dpToPx(10), dpToPx(0), dpToPx(10))
-                            countParams.gravity = Gravity.CENTER_HORIZONTAL
-                            count.layoutParams = countParams
+                                    val count = TextView(this)
+                                    val countParams = LinearLayout.LayoutParams(dpToPx(50), LinearLayout.LayoutParams.WRAP_CONTENT)
+                                    countParams.setMargins(dpToPx(0), dpToPx(10), dpToPx(0), dpToPx(10))
+                                    countParams.gravity = Gravity.CENTER_HORIZONTAL
+                                    count.layoutParams = countParams
 
-                            var menuCount = menu.menuCount
-                            for(order in filterOrdersByDate(orders, dateOrder)){
-                                for(orderMenu in order.menu){
-                                    if(orderMenu.menuId == menu.menuId){
-                                        menuCount -= orderMenu.number
+                                    var menuCount = menu.menuCount
+                                    for(order in filterOrdersByDate(orders, dateOrder)){
+                                        for(orderMenu in order.menu){
+                                            if(orderMenu.menuId == menu.menuId){
+                                                menuCount -= orderMenu.number
+                                            }
+                                        }
                                     }
-                                }
-                            }
 
-                            count.setText(menuCount.toString() + " шт.")
-                            count.textSize = 16f
-                            count.setTextColor(getColor(R.color.DeepSkyBlue))
 
-                            val linearLayoutChildren = LinearLayout(this)
-                            val linearLayoutChildrenParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dpToPx(50))
-                            linearLayoutChildren.layoutParams = linearLayoutChildrenParams
-                            linearLayoutChildren.gravity = Gravity.CENTER_HORIZONTAL
-                            linearLayoutChildren.orientation = LinearLayout.HORIZONTAL
-
-                            val countInCart = TextView(this)
-                            val countInCartParams = LinearLayout.LayoutParams(dpToPx(20), dpToPx(40))
-                            countInCartParams.setMargins(dpToPx(0), dpToPx(15), dpToPx(0), dpToPx(10))
-                            countInCartParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
-                            countInCart.layoutParams = countInCartParams
-                            countInCart.setText("0")
-                            countInCart.setTextColor(getColor(R.color.DeepSkyBlue))
-                            countInCart.textAlignment = View.TEXT_ALIGNMENT_CENTER
-
-                            val addButton = Button(this)
-                            val addButtonParams = LinearLayout.LayoutParams(dpToPx(40), dpToPx(40))
-                            addButtonParams.setMargins(dpToPx(0), dpToPx(10), dpToPx(0), dpToPx(10))
-                            addButtonParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
-                            addButton.layoutParams = addButtonParams
-                            addButton.setText("+")
-                            addButton.setOnClickListener {
-
-                                val menuCart = menuInCart.firstOrNull{it.menuId == menu.menuId}
-                                if(menuCart != null){
-                                    if(menuCount <= menuCart.number){
-                                        Toast.makeText(this, "${men.name} кончился", Toast.LENGTH_SHORT).show()
+                                    for(extendMenu in extendFactoryMenu){
+                                        println("ПРОВЕРКА ДОПОЛНИТЕЛЬНОЙ ГОТОВКИ")
+                                        if(extendMenu.menuId == men.id){
+                                            if(areDatesEqual(extendMenu.date, Date())){
+                                                menuCount += extendMenu.count
+                                            }
+                                        }
                                     }
-                                    else{
-                                        menuInCart.firstOrNull{it.menuId == menu.menuId}!!.number ++
-                                        countInCart.setText("${menuInCart.firstOrNull{it.menuId == menu.menuId}!!.number}")
-                                    }
-                                }
-                                else if(menuCount == 0){
+
+                                    count.setText(menuCount.toString() + " шт.")
+                                    count.textSize = 16f
+                                    count.setTextColor(getColor(R.color.MidnightBlue))
+
+                                    val linearLayoutChildren = LinearLayout(this)
+                                    val linearLayoutChildrenParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dpToPx(50))
+                                    linearLayoutChildren.layoutParams = linearLayoutChildrenParams
+                                    linearLayoutChildren.gravity = Gravity.CENTER_HORIZONTAL
+                                    linearLayoutChildren.orientation = LinearLayout.HORIZONTAL
+
+                                    val countInCart = TextView(this)
+                                    val countInCartParams = LinearLayout.LayoutParams(dpToPx(20), dpToPx(40))
+                                    countInCartParams.setMargins(dpToPx(0), dpToPx(15), dpToPx(0), dpToPx(10))
+                                    countInCartParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
+                                    countInCart.layoutParams = countInCartParams
                                     countInCart.setText("0")
-                                    Toast.makeText(this, "Товара нет в наличии", Toast.LENGTH_SHORT).show()
-                                }
-                                else {
-                                    menuInCart.add(MenuPair(menu.menuId, 1))
-                                    countInCart.setText("1")
-                                }
+                                    countInCart.setTextColor(getColor(R.color.MidnightBlue))
+                                    countInCart.textAlignment = View.TEXT_ALIGNMENT_CENTER
 
-                            }
+                                    val addButton = Button(this)
+                                    val addButtonParams = LinearLayout.LayoutParams(dpToPx(40), dpToPx(40))
+                                    addButtonParams.setMargins(dpToPx(0), dpToPx(10), dpToPx(0), dpToPx(10))
+                                    addButtonParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
+                                    addButton.layoutParams = addButtonParams
+                                    addButton.setText("+")
+                                    addButton.setOnClickListener {
 
-                            val removeButton = Button(this)
-                            val removeButtonParams = LinearLayout.LayoutParams(dpToPx(40), dpToPx(40))
-                            removeButtonParams.setMargins(dpToPx(0), dpToPx(10), dpToPx(0), dpToPx(10))
-                            removeButtonParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
-                            removeButton.layoutParams = removeButtonParams
-                            removeButton.setText("-")
-                            removeButton.setOnClickListener {
+                                        val menuCart = menuInCart.firstOrNull{it.menuId == menu.menuId}
+                                        if(menuCart != null){
+                                            if(menuCount <= menuCart.number){
+                                                Toast.makeText(this, "${men.name} кончился", Toast.LENGTH_SHORT).show()
+                                            }
+                                            else{
+                                                menuInCart.firstOrNull{it.menuId == menu.menuId}!!.number ++
+                                                countInCart.setText("${menuInCart.firstOrNull{it.menuId == menu.menuId}!!.number}")
+                                            }
+                                        }
+                                        else if(menuCount == 0){
+                                            countInCart.setText("0")
+                                            Toast.makeText(this, "Товара нет в наличии", Toast.LENGTH_SHORT).show()
+                                        }
+                                        else {
+                                            menuInCart.add(MenuPair(menu.menuId, 1))
+                                            countInCart.setText("1")
+                                        }
 
-                                val menuCart = menuInCart.firstOrNull{it.menuId == menu.menuId}
-                                if(menuCart != null){
-                                    if(menuCart.number == 1){
-                                        menuInCart.remove(menuCart)
-                                        countInCart.setText("0")
                                     }
-                                    else{
-                                        menuInCart.firstOrNull{it.menuId == menu.menuId}!!.number --
-                                        countInCart.setText("${menuInCart.firstOrNull { it.menuId == menu.menuId }!!.number}")
+
+                                    val removeButton = Button(this)
+                                    val removeButtonParams = LinearLayout.LayoutParams(dpToPx(40), dpToPx(40))
+                                    removeButtonParams.setMargins(dpToPx(0), dpToPx(10), dpToPx(0), dpToPx(10))
+                                    removeButtonParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
+                                    removeButton.layoutParams = removeButtonParams
+                                    removeButton.setText("-")
+                                    removeButton.setOnClickListener {
+
+                                        val menuCart = menuInCart.firstOrNull{it.menuId == menu.menuId}
+                                        if(menuCart != null){
+                                            if(menuCart.number == 1){
+                                                menuInCart.remove(menuCart)
+                                                countInCart.setText("0")
+                                            }
+                                            else{
+                                                menuInCart.firstOrNull{it.menuId == menu.menuId}!!.number --
+                                                countInCart.setText("${menuInCart.firstOrNull { it.menuId == menu.menuId }!!.number}")
+                                            }
+                                        }
+
+
+                                    }
+
+                                    linearLayoutChildren.addView(addButton)
+                                    linearLayoutChildren.addView(countInCart)
+                                    linearLayoutChildren.addView(removeButton)
+
+
+                                    linearLayout.addView(image)
+                                    linearLayout.addView(name)
+                                    linearLayout.addView(count)
+                                    linearLayout.addView(linearLayoutChildren)
+
+                                    menu_list.addView(linearLayout)
+
+                                    column++
+                                    if (column == 2) {
+                                        column = 0
+                                        row++
                                     }
                                 }
 
-
                             }
 
-                            linearLayoutChildren.addView(addButton)
-                            linearLayoutChildren.addView(countInCart)
-                            linearLayoutChildren.addView(removeButton)
 
-
-                            linearLayout.addView(image)
-                            linearLayout.addView(name)
-                            linearLayout.addView(count)
-                            linearLayout.addView(linearLayoutChildren)
-
-                            menu_list.addView(linearLayout)
-
-                            column++
-                            if (column == 2) {
-                                column = 0
-                                row++
-                            }
                         }
-
-                    }
-
-
                 }
             }
         }
+    }
+
+    fun areDatesEqual(date1: Date, date2: Date): Boolean {
+        val calendar1 = Calendar.getInstance().apply { time = date1 }
+        val calendar2 = Calendar.getInstance().apply { time = date2 }
+
+        calendar1.set(Calendar.HOUR_OF_DAY, 0)
+        calendar1.set(Calendar.MINUTE, 0)
+        calendar1.set(Calendar.SECOND, 0)
+        calendar1.set(Calendar.MILLISECOND, 0)
+
+        calendar2.set(Calendar.HOUR_OF_DAY, 0)
+        calendar2.set(Calendar.MINUTE, 0)
+        calendar2.set(Calendar.SECOND, 0)
+        calendar2.set(Calendar.MILLISECOND, 0)
+
+        return calendar1.equals(calendar2)
     }
 
     fun LoadOrders(){
@@ -607,7 +637,7 @@ class ClientActivity : AppCompatActivity() {
                         name.layoutParams = nameParams
                         name.setText("Заказ на ${dateTimeFormat.format(order.date)} в столовой ${factory!!.factoryName}")
                         name.textSize = 16f
-                        name.setTextColor(getColor(R.color.DeepSkyBlue))
+                        name.setTextColor(getColor(R.color.MidnightBlue))
 
                         val status = TextView(this)
                         val statusParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
@@ -621,7 +651,7 @@ class ClientActivity : AppCompatActivity() {
                             status.setText("Статус: Получен")
                         }
                         status.textSize = 16f
-                        status.setTextColor(getColor(R.color.DeepSkyBlue))
+                        status.setTextColor(getColor(R.color.MidnightBlue))
 
 
                         linearLayout.addView(name)
@@ -728,7 +758,7 @@ class ClientActivity : AppCompatActivity() {
 
         tv_menu_menu.setTextColor(getColor(R.color.black))
         tv_menu_orders.setTextColor(getColor(R.color.black))
-        tv_menu_profile.setTextColor(getColor(R.color.DeepSkyBlue))
+        tv_menu_profile.setTextColor(getColor(R.color.MidnightBlue))
 
         LoadProfile()
 
@@ -746,7 +776,7 @@ class ClientActivity : AppCompatActivity() {
         icon_menu_menu.setBackgroundResource(R.drawable.icon_menu_blue)
         icon_menu_profile.setBackgroundResource(R.drawable.icon_profile)
 
-        tv_menu_menu.setTextColor(getColor(R.color.DeepSkyBlue))
+        tv_menu_menu.setTextColor(getColor(R.color.MidnightBlue))
         tv_menu_orders.setTextColor(getColor(R.color.black))
         tv_menu_profile.setTextColor(getColor(R.color.black))
 
@@ -766,7 +796,7 @@ class ClientActivity : AppCompatActivity() {
         icon_menu_profile.setBackgroundResource(R.drawable.icon_profile)
 
         tv_menu_menu.setTextColor(getColor(R.color.black))
-        tv_menu_orders.setTextColor(getColor(R.color.DeepSkyBlue))
+        tv_menu_orders.setTextColor(getColor(R.color.MidnightBlue))
         tv_menu_profile.setTextColor(getColor(R.color.black))
 
         LoadOrders()
